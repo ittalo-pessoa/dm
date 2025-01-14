@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Nome:</strong>
+  <%= @curricular_component.nome %>
+</p>
+
+<p>
+  <strong>Serie:</strong>
+  <%= @curricular_component.serie %>
+</p>
+
+<p>
+  <strong>Area:</strong>
+  <%= @curricular_component.area %>
+</p>
+
+<p>
+  <strong>Curso:</strong>
+  <%= @curricular_component.curso %>
+</p>
+
+<p>
+  <strong>Aulas:</strong>
+  <%= @curricular_component.aulas %>
+</p>
+
+<p>
+  <strong>Responsible:</strong>
+  <%= @curricular_component.responsible %>
+</p>
+
+<%= link_to 'Edit', edit_curricular_component_path(@curricular_component) %> |
+<%= link_to 'Back', curricular_components_path %>

@@ -1,0 +1,47 @@
+<%= form_with(model: horario, local: true) do |form| %>
+  <% if horario.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(horario.errors.count, "erro") %> proibiu que este horário fosse salvo:</h2>
+      <ul>
+        <% horario.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :nome %>
+    <%= form.text_field :nome, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :aulas %>
+    <%= form.number_field :aulas, class: 'form-control', min: 0, value: @horario.aulas %>
+  </div>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Dia</th>
+        <th>Horário</th>
+        <th>Responsável(s)</th>
+      </tr>
+    </thead>
+    <tbody id="dias-rows">
+      <% (1..5).each do |dia| %>
+        <% (1..@horario.aulas).each do |aula| %>
+          <tr>
+            <td><%= "Dia #{dia}" %></td>
+            <td><%= "Aula #{aula}" %></td>
+            <td>
+              <%= select_tag "horario[d#{dia}][]", options_for_select(@disponiveis, @horario["d#{dia}"] ? @horario["d#{dia}"] : nil), class: 'form-control' %>
+            </td>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= form.submit "Salvar", class: 'btn btn-primary' %>
+<% end %>

@@ -1,0 +1,51 @@
+<!-- app/views/pages/home.html.erb -->
+<%= stylesheet_link_tag "pages", media: "all", "data-turbo-track": "reload" %>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+<div style="text-align: center">
+  <img src="<%= asset_path('PROFTECH_1.png') %>" alt="Banner"><br>
+</div>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card" style="width: 18rem;">
+              <i class="bi bi-person-fill-add"></i>
+                <div class="card-body">
+                  <h5 class="card-title">Professores</h5>
+                  <p class="card-text">Insira as informações necessárias para o cadastro do professor. Certifique-se se os dados estão corretos.
+                    Revise as informações antes de finalizar.</p>
+                    <a href="<%= teachers_path %>" class="btn btn-primary" target="_blank">Ir agora!</a>
+                </div>
+              </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card" style="width: 18rem;">
+              <i class="bi bi-journal-plus"></i>
+                <div class="card-body">
+                  <h5 class="card-title teste">Componetes Curriculares</h5>
+                  <p class="card-text">Agora cadastre novos componentes curriculares, indicando a área pedagógica para o qual pertence, assim como o
+                    professor que irá leciona-lo.
+                  </p>
+                  <a href="<%= curricular_components_path %>" class="btn btn-primary" target="_blank">Ir agora!</a>
+                </div>
+              </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card" style="width: 18rem;">
+              <i class="bi bi-calendar3"></i>
+                <div class="card-body">
+                  <h5 class="card-title">Horário</h5>
+                  <p class="card-text">Para montar o horário certifiqui-se se os professores e os componentes curriculares já estão cadastrados. Aqui, choques
+                    de horários não serão permitidos.
+                  </p>
+                  <a href="<%= horarios_path %>"  class="btn btn-primary" target="_blank">Ir agora!</a>
+                </div>
+              </div>
+        </div>
+    </div>
+
+</div>
+
+

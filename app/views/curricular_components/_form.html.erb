@@ -1,0 +1,86 @@
+<%= stylesheet_link_tag "teachers", media: "all", "data-turbo-track": "reload" %>
+
+<%= form_with(model: curricular_component, class: 'container') do |form| %>
+  <% if curricular_component.errors.any? %>
+    <div id="error_explanation" class="alert alert-danger">
+      <h2><%= pluralize(curricular_component.errors.count, "error") %> prohibited this curricular_component from being saved:</h2>
+      <ul>
+        <% curricular_component.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <!-- Nome -->
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= form.text_field :nome, class: 'form-control', placeholder: 'Digite o nome' %>
+        <small class="form-text text-muted mt-2">Digite o nome do componente curricular</small>
+      </div>
+    </div>
+
+    <!-- Série -->
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= form.select :serie, ['1º ANO', '2º ANO', '3º ANO'], { prompt: 'Selecione a série' }, class: 'form-control' %>
+        <small class="form-text text-muted mt-2">Selecione a série do componente curricular</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Área -->
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= form.select "area", ["--Selecione o item--", 'BNCC', 'Área Diversificada', 'Área Técnica'], { prompt: false }, class: 'form-control' %>
+        <small class="form-text text-muted mt-2">Selecione a área a qual o componente pertence</small>
+      </div>
+    </div>
+
+    <!-- Aulas -->
+    <div class="col-md-6">
+      <div class="form-group">
+        <%= form.number_field :aulas, class: 'form-control', placeholder: 'Quantidade de aulas', step: 1, min: 0 %>
+        <small class="form-text text-muted mt-2">Informe o número de aulas</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Responsável -->
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= form.collection_select :responsible_id, Teacher.all, :id, :nick_name, { prompt: 'Selecione o responsável' }, class: 'form-control' %>
+        <small class="form-text text-muted mt-2">Selecione o professor responsável</small>
+      </div>
+    </div>
+
+     <div class="col-md-4">
+      <div class="form-group">
+        <%= form.collection_select :second_professor_name, Teacher.all, :nick_name, :nick_name, { prompt: 'Em caso de dois responsáveis - Selecione o responsável' }, class: 'form-control' %>
+        <small class="form-text text-muted mt-2">Selecione o professor responsável</small>
+      </div>
+    </div>
+
+    <!-- Cursos -->
+    <div class="col-md-4">
+      <div class="form-group">
+        <%= form.label :curso, 'Cursos', class: 'form-label' %>
+        <% ['Agroecologia', 'Análises Clínicas', 'Informática'].each do |curso| %>
+          <div class="form-check">
+            <%= check_box_tag 'curricular_component[curso][]', curso, curricular_component.curso&.include?(curso), class: 'form-check-input' %>
+            <%= label_tag "curricular_component[curso][]", curso, class: 'form-check-label' %>
+          </div>
+        <% end %>
+        <small class="form-text text-muted mt-2">Selecione os cursos aos quais o componente curricular pertence</small>
+      </div>
+    </div>
+  </div>
+<br>
+  <div class="form-group" style="text-align: center;">
+    <%= form.submit 'Salvar', class: 'btn btn-primary' %>
+  </div>
+
+<% end %>

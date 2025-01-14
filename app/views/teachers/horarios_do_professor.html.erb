@@ -1,0 +1,124 @@
+<%= stylesheet_link_tag "teachers", media: "all", "data-turbo-track": "reload" %>
+
+<h3>Horários de <%= @horarios_professor[:professor] %></h3>
+
+<% if @horarios_professor[:horarios].empty? %>
+  <p>Este professor não possui horários registrados.</p>
+<% else %>
+  <br>
+
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th class="text-center" style="background-color: #007bff; color: white">Aula</th>
+          <th class="text-center" style="background-color: #007bff; color: white">Segunda</th>
+          <th class="text-center" style="background-color: #007bff; color: white">Terça</th>
+          <th class="text-center" style="background-color: #007bff; color: white">Quarta</th>
+          <th class="text-center" style="background-color: #007bff; color: white">Quinta</th>
+          <th class="text-center" style="background-color: #007bff; color: white">Sexta</th>
+        </tr>
+      </thead>
+      <tbody id="aulas-table-body">
+        <!-- As células da tabela serão preenchidas via JavaScript -->
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<%= link_to 'Voltar', teachers_path %>
+
+<script>
+  // Variável `aulas` com os dados passados pelo controlador
+  const aulas = <%= raw(@horarios_professor[:horarios].to_json) %>;
+
+  // Mapeamento de horários por número de aula
+  const horariosAulas = {
+    1: "07:30 - 08:20",
+    2: "08:20 - 09:10",
+    3: "09:30 - 10:20",
+    4: "10:20 - 11:10",
+    5: "11:10 - 12:00",
+    6: "13:20 - 14:10",
+    7: "14:10 - 15:00",
+    8: "15:20 - 16:10",
+    9: "16:10 - 17:00"
+  };
+
+  // Função para preencher a tabela com os dados
+  function preencherTabela(dados) {
+    let tabelaCorpo = document.getElementById('aulas-table-body');
+
+    // Limpar a tabela antes de preencher
+    tabelaCorpo.innerHTML = "";
+
+    // Preencher as 9 aulas para os dias da semana
+    for (let aulaCount = 1; aulaCount <= 9; aulaCount++) {
+      let linha = document.createElement('tr');
+
+      // Adiciona a coluna "Aula" com número e horário
+      let aulaCell = document.createElement('td');
+      const horarioDiv = document.createElement('div');
+      horarioDiv.textContent = horariosAulas[aulaCount];
+      horarioDiv.style.fontSize = "smaller";
+      horarioDiv.style.color = "gray";
+      aulaCell.appendChild(horarioDiv);
+      aulaCell.classList.add('text-center');
+      linha.appendChild(aulaCell);
+
+      // Adiciona as células para cada dia da semana (Segunda, Terça, etc.)
+      for (let dia = 1; dia <= 5; dia++) {
+        let celula = document.createElement('td');
+
+        // Acessa a aula do dia e horário pelo índice
+        let aula = dados[`d${dia}`] && dados[`d${dia}`][aulaCount - 1];
+
+        if (aula) {
+          // Divide o nome do professor e a disciplina
+          const nomeProfessor = aula.horario;
+          const nomeDisciplina = aula.componente;
+
+          // Cria os elementos de nome e disciplina
+          const nomeProfessorDiv = document.createElement('div');
+          nomeProfessorDiv.textContent = nomeProfessor;
+          nomeProfessorDiv.classList.add('professor-nome');
+
+          const nomeDisciplinaDiv = document.createElement('div');
+          nomeDisciplinaDiv.textContent = nomeDisciplina;
+          nomeDisciplinaDiv.classList.add('disciplina-nome');
+
+          // Adiciona os elementos à célula
+          celula.appendChild(nomeProfessorDiv);
+          celula.appendChild(nomeDisciplinaDiv);
+        } else {
+          // Caso não haja aula, a célula ficará vazia
+          celula.textContent = "";
+        }
+
+        // Adiciona a célula na linha da tabela
+        linha.appendChild(celula);
+      }
+
+      // Adiciona a linha completa na tabela
+      tabelaCorpo.appendChild(linha);
+
+      // Adiciona linhas extras para intervalos e almoço
+      if (aulaCount === 2 || aulaCount === 5 || aulaCount === 7) {
+        const linhaExtra = document.createElement('tr');
+        const celulaIntervalo = document.createElement('td');
+        celulaIntervalo.textContent = aulaCount === 5 ? "Almoço" : "Intervalo";
+        celulaIntervalo.colSpan = 6;
+        celulaIntervalo.classList.add('text-center');
+        celulaIntervalo.style.backgroundColor = "lightgray";
+        celulaIntervalo.style.fontWeight = "bold";
+        linhaExtra.appendChild(celulaIntervalo);
+        tabelaCorpo.appendChild(linhaExtra);
+      }
+    }
+  }
+
+  // Chama a função para preencher a tabela com os dados passados
+  document.addEventListener('DOMContentLoaded', function() {
+    preencherTabela(aulas);
+  });
+</script>

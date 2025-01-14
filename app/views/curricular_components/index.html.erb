@@ -1,0 +1,191 @@
+<p id="notice"><%= notice %></p>
+
+
+<%= stylesheet_link_tag "teachers", media: "all", "data-turbo-track": "reload" %>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.21.1/bootstrap-table.min.css" rel="stylesheet">
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.21.1/bootstrap-table.min.js"></script>
+
+<h1>Componentes Curriculares</h1>
+
+<br>
+<div class="container text-end">
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formModal">
+  Adicionar Componente Curricular
+</button>
+</div>
+<br>
+
+<table id="teachers-table" class="table table-striped"
+       data-pagination="true"
+       data-page-size="10"
+       data-search="true"
+       data-show-columns="true"
+       data-pagination-parts='["pageSize", "pageList"]'
+       data-toggle="table"
+       data-search-placeholder="Pesquisar...">
+  <thead>
+    <tr>
+      <th data-field="name" data-sortable="true">Nome</th>
+      <th data-field="prof" data-sortable="true">Responsável 1</th>
+      <th data-field="prof2" data-sortable="true">Responsável 2</th>
+      <th data-field="serie" data-sortable="true">Série</th>
+      <th data-field="area" data-sortable="true">Área</th>
+      <th data-field="aulas" data-sortable="true">Nº de Aulas</th>
+      <th data-field="cursos" data-sortable="true">Curso(s)</th>
+      <th data-field="status" data-sortable="false">Visualizar</th>
+      <th data-field="edit" data-sortable="false">Editar</th>
+      <th data-field="delete" data-sortable="false">Deletar</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @curricular_components.each do |curricular_component|  %>
+      <tr>
+        <td><%= curricular_component.nome %></td>
+        <td><%= curricular_component.responsible.nick_name %></td>
+        <%if curricular_component.second_professor_name.present?%>
+          <td><%= curricular_component.second_professor_name %></td>
+        <%else%>
+          <td> - </td>
+        <%end%>
+         <td><%= curricular_component.serie %></td>
+         <td><%= curricular_component.area %></td>
+         <td><%= curricular_component.aulas %></td>
+         <%if curricular_component.curso.size == 3%>
+            <td class="todos">Todos</td>
+          <%else%>
+            <%if curricular_component.curso == ["Informática"]%>
+                  <td class="info">Informática</td>
+            <%elsif curricular_component.curso == ["Análises Clínicas"]%>
+                  <td class="ana">Análises Clínicas</td>
+            <%else%>
+                  <td class="agro">Agroecologia</td>
+            <%end%>
+          <%end%>
+
+        <td><%= link_to '', curricular_component , class: "bi bi-eye-fill" %></td>
+        <td><%= link_to '', edit_curricular_component_path(curricular_component), class: "bi bi-pen-fill" %></td>
+        <td><%= button_to curricular_component, method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn p-0 border-0 bg-transparent', style: 'color: #ea7d00db' do %>
+        <i class="bi bi-trash-fill"></i> <% end %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Cabeçalho do Modal -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="formModalLabel">Adicionar Componente Curricular</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Corpo do Modal -->
+      <div class="modal-body">
+        <%= form_with(model: @curricular_component, class: 'container text-start') do |form| %>
+          <% if @curricular_component.errors.any? %>
+            <div id="error_explanation" class="alert alert-danger">
+              <h2><%= pluralize(@curricular_component.errors.count, "erro") %> impediram o salvamento:</h2>
+              <ul>
+                <% @curricular_component.errors.each do |error| %>
+                  <li><%= error.full_message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <!-- Nome -->
+          <div class="form-group mb-3">
+            <%= form.text_field :nome, class: 'form-control', placeholder: 'Digite o nome' %>
+          </div>
+
+          <!-- Série -->
+          <div class="form-group mb-3">
+            <%= form.select :serie, ['1º ANO', '2º ANO', '3º ANO'], { prompt: 'Selecione a série' }, class: 'form-control' %>
+          </div>
+
+          <!-- Área -->
+          <div class="form-group mb-3">
+            <%= form.select :area, ['BNCC', 'Área Diversificada', 'Área Técnica'], { prompt: 'Selecione a área' }, class: 'form-control' %>
+          </div>
+
+          <!-- Aulas -->
+          <div class="form-group mb-3">
+            <%= form.number_field :aulas, class: 'form-control', placeholder: 'Digite a quantidade de aulas', step: 1, min: 0 %>
+          </div>
+
+          <!-- Responsável -->
+          <div class="form-group mb-3">
+            <%= form.collection_select :responsible_id, Teacher.all, :id, :nick_name, { prompt: 'Selecione o responsável' }, class: 'form-control' %>
+          </div>
+
+            <!-- Responsável -->
+          <div class="form-group mb-3">
+            <%= form.collection_select :second_professor_name, Teacher.all, :nick_name, :nick_name, { prompt: 'Em caso de dois responsáveis - Selecione o responsável' }, class: 'form-control' %>
+          </div>
+
+          <!-- Cursos -->
+          <div class="form-group mb-3">
+            <%= form.label :curso, 'Cursos', class: 'form-label' %>
+            <% ['Agroecologia', 'Análises Clínicas', 'Informática'].each do |curso| %>
+              <div class="form-check">
+                <%= check_box_tag 'curricular_component[curso][]', curso, @curricular_component.curso&.include?(curso), class: 'form-check-input' %>
+                <%= label_tag "curricular_component[curso][]", curso, class: 'form-check-label' %>
+              </div>
+            <% end %>
+          </div>
+
+
+      </div>
+
+      <!-- Rodapé do Modal -->
+      <div class="modal-footer">
+      <!-- Botão de salvar -->
+          <div class="form-group">
+            <%= form.submit 'Salvar', class: 'btn btn-primary' %>
+          </div>
+        <% end %>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+<script>
+$(document).ready(function() {
+  $('#teachers-table').bootstrapTable({
+    pagination: true,
+    pageSize: 10,
+    search: true,
+    searchText: 'Pesquisar...', // Aqui definimos o texto padrão para o campo de busca
+    formatSearch: function () {
+      return 'Pesquisar...'; // Customizando o texto de pesquisa
+    }
+  });
+});
+</script>
+
+
+
+<script>
+  // Abrir o modal ao clicar no botão "Cadastrar Professor"
+  document.getElementById('openModalBtn').addEventListener('click', function () {
+    var myModal = new bootstrap.Modal(document.getElementById('teacherModal'));
+    myModal.show();
+  });
+</script>

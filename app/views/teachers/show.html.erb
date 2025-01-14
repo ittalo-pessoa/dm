@@ -1,0 +1,17 @@
+<p id="notice"><%= notice %></p>
+<%= stylesheet_link_tag "teachers", media: "all", "data-turbo-track": "reload" %>
+
+<div class="container">
+  <p>
+    <strong>Nome do Professor:</strong>
+    <%= @teacher.name %>
+  </p>
+
+  <p>
+    <strong>Nome do usuário:</strong>
+    <%= @teacher.nick_name %>
+  </p>
+
+  <%= link_to 'Editar', edit_teacher_path(@teacher) %> |
+  <%= link_to 'Voltar', teachers_path %>
+</div>

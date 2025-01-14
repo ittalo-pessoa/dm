@@ -1,0 +1,268 @@
+<%= stylesheet_link_tag "teachers", media: "all", "data-turbo-track": "reload" %>
+
+
+<h1>NOVO HORÁRIO</h1>
+
+
+<%= form_with model: @horario, local: true, class: "form-horizontal" do |form| %>
+  <% if @horario.errors.any? %>
+    <div id="error_explanation" class="alert alert-danger">
+      <h4><%= pluralize(@horario.errors.count, "erro") %> encontrado(s):</h4>
+      <ul>
+        <% @horario.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :nome, "Nome do Horário", class: "form-label" %>
+    <%= form.text_field :nome, id: "nome_field", class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :aulas, "Número de Aulas", class: "form-label" %>
+    <%= form.number_field :aulas, id: "aulas_field", class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= form.label :serie, "Selecione a série", class: "form-label" %>
+     <%= form.select :serie, ['1º ANO', '2º ANO', '3º ANO'], { prompt: 'Selecione a série' }, class: 'form-control' %>
+  </div>
+   <div class="form-group">
+    <%= form.label :curso, "Selecione o Curso", class: "form-label" %>
+     <%= form.select :curso, ['Agroecologia', 'Análises Clínicas', 'Informática'], { prompt: 'Selecione o Curso' }, class: 'form-control' %>
+  </div>
+
+
+
+
+  <div id="dias-table" class="form-group">
+    <h3 class="text-center">Tabela de Aulas para <span id="nome-turma">Nenhum nome informado</span></h3>
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th class="text-center">Segunda</th>
+            <th class="text-center">Terça</th>
+            <th class="text-center">Quarta</th>
+            <th class="text-center">Quinta</th>
+            <th class="text-center">Sexta</th>
+          </tr>
+        </thead>
+        <tbody id="dias-rows">
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="form-group text-center">
+    <%= form.submit "Criar Horário", class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const diasRows = document.getElementById('dias-rows');
+  const contadorAlocacoesTbody = document.querySelector('#contador-alocacoes tbody');
+
+  // Função para atualizar o contador
+  function atualizarContadorAlocacoes() {
+    const contador = {};
+
+    // Percorre todas as linhas da tabela de horários
+    const selects = diasRows.querySelectorAll('select');
+    selects.forEach(select => {
+      const componenteSelecionado = select.value;
+
+      if (componenteSelecionado) {
+        contador[componenteSelecionado] = (contador[componenteSelecionado] || 0) + 1;
+      }
+    });
+
+    // Limpa o corpo da tabela de contagem
+    contadorAlocacoesTbody.innerHTML = '';
+
+    // Adiciona as contagens na tabela
+    for (const [componente, count] of Object.entries(contador)) {
+      const row = document.createElement('tr');
+
+      const componenteCell = document.createElement('td');
+      componenteCell.textContent = componente;
+      row.appendChild(componenteCell);
+
+      const countCell = document.createElement('td');
+      countCell.textContent = count;
+      row.appendChild(countCell);
+
+      contadorAlocacoesTbody.appendChild(row);
+    }
+  }
+
+  // Atualiza o contador dinamicamente ao alterar qualquer select
+  diasRows.addEventListener('change', function (event) {
+    if (event.target.tagName === 'SELECT') {
+      atualizarContadorAlocacoes();
+    }
+  });
+
+  // Atualiza o contador inicialmente
+  atualizarContadorAlocacoes();
+});
+
+
+</script>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+  const nomeField = document.getElementById('nome_field');
+  const nomeTurmaSpan = document.getElementById('nome-turma');
+  const aulasField = document.getElementById('aulas_field');
+  const diasRows = document.getElementById('dias-rows');
+
+  // Passando os valores de @disponiveis e @professores_disponiveis para o JavaScript
+  const disponiveis = <%= raw @disponiveis.to_json %>;
+  const professoresDisponiveis = <%= raw @professores_disponiveis.to_json %>;
+
+  // Atualiza o nome dinamicamente conforme o usuário digita no campo
+  nomeField.addEventListener('input', function() {
+    nomeTurmaSpan.textContent = nomeField.value || "Nenhum nome informado";
+  });
+
+  // Lógica para gerar as linhas da tabela com base no número de aulas
+  aulasField.addEventListener('input', function() {
+    const aulasCount = parseInt(aulasField.value, 10) || 0;
+
+    // Limpa as linhas atuais
+    diasRows.innerHTML = '';
+
+    if (aulasCount > 0) {
+      // Cria novas linhas com base no número de aulas
+      for (let i = 0; i < aulasCount; i++) {
+        const row = document.createElement('tr');
+
+        // Cria células para cada dia da semana
+        for (let j = 1; j <= 5; j++) {
+          const cell = document.createElement('td');
+          const select = document.createElement('select');
+
+          // Adiciona classes do Bootstrap para estilizar
+          select.classList.add('form-control');
+          select.name = `horario[d${j}][]`; // Nomes dos campos com o índice adequado
+
+          // Adiciona a opção padrão "Selecione..."
+          const optionEmpty = document.createElement('option');
+          optionEmpty.value = '';
+          optionEmpty.textContent = 'Selecione...';
+          select.appendChild(optionEmpty);
+
+          // Chave do horário atual (ex.: d1_1 para o primeiro horário do Dia 1)
+          const horarioKey = `d${j}_${i + 1}`;
+
+          // Armazenando as opções que já foram adicionadas
+          let addedOptions = new Set();
+          let addedProfessorPairs = new Set(); // Para armazenar pares de professores já adicionados
+
+          // Adiciona opções com base nos professores disponíveis
+          disponiveis.forEach(function(opcao) {
+            const partes = opcao.split(" - "); // Divide a opção em "Professor(s)" e "Componente"
+            const professores = partes[0].split(" e "); // Divide os professores se houver " e "
+
+            // Verifica se o primeiro professor está disponível para o horário atual
+            if (
+              professoresDisponiveis[professores[0]] &&
+              professoresDisponiveis[professores[0]].available[horarioKey] !== false
+            ) {
+              // Verifica se o segundo professor também está disponível
+              let segundoProfessorDisponivel = true;
+              if (professores.length > 1) {
+                segundoProfessorDisponivel = professoresDisponiveis[professores[1]] &&
+                                             professoresDisponiveis[professores[1]].available[horarioKey] !== false;
+              }
+
+              // Se ambos os professores estão disponíveis, cria a opção
+              if (segundoProfessorDisponivel) {
+                const option = document.createElement('option');
+                if (professores.length === 1) {
+                  // Se houver apenas um professor, verifica se a opção com dois professores já existe
+                  if (!addedProfessorPairs.has(opcao)) {
+                    option.value = opcao;
+                    option.textContent = opcao;
+                    select.appendChild(option);
+                    addedOptions.add(opcao); // Marca a opção como adicionada
+                  }
+                } else if (professores.length === 2) {
+                  // Se houver dois professores, cria a opção com " e " no meio e o componente
+                  const optionValue = professores.join(" e ") + " - " + partes[1]; // Exibe os dois professores com " e " no meio
+                  if (!addedProfessorPairs.has(optionValue)) {
+                    option.value = optionValue;
+                    option.textContent = optionValue;
+                    select.appendChild(option);
+                    addedProfessorPairs.add(optionValue); // Marca o par de professores como adicionado
+                    addedOptions.add(optionValue); // Garante que o par de professores não seja adicionado novamente
+                  }
+                }
+              }
+            }
+          });
+
+          // Adiciona o campo select à célula
+          cell.appendChild(select);
+          row.appendChild(cell);
+        }
+
+        // Adiciona a linha ao corpo da tabela
+        diasRows.appendChild(row);
+
+        // Adiciona uma linha de "INTERVALO" após a 3ª aula
+        if (i === 2) {
+          const intervaloRow = document.createElement('tr');
+          intervaloRow.classList.add('bg-light'); // Linha cinza
+          for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('td');
+            cell.colSpan = 1;
+            cell.textContent = "INTERVALO";
+            cell.classList.add('text-center', 'bg-secondary', 'text-white'); // Estilizando com fundo cinza
+            intervaloRow.appendChild(cell);
+          }
+          diasRows.appendChild(intervaloRow);
+        }
+
+        // Adiciona uma linha de "ALMOÇO" após a 5ª aula
+        if (i === 4) {
+          const almocoRow = document.createElement('tr');
+          almocoRow.classList.add('bg-light'); // Linha cinza
+          for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('td');
+            cell.colSpan = 1;
+            cell.textContent = "ALMOÇO";
+            cell.classList.add('text-center', 'bg-secondary', 'text-white'); // Estilizando com fundo cinza
+            almocoRow.appendChild(cell);
+          }
+          diasRows.appendChild(almocoRow);
+        }
+
+        // Adiciona uma linha de "INTERVALO" após a 7ª aula
+        if (i === 6) {
+          const intervaloRow = document.createElement('tr');
+          intervaloRow.classList.add('bg-light'); // Linha cinza
+          for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('td');
+            cell.colSpan = 1;
+            cell.textContent = "INTERVALO";
+            cell.classList.add('text-center', 'bg-secondary', 'text-white'); // Estilizando com fundo cinza
+            intervaloRow.appendChild(cell);
+          }
+          diasRows.appendChild(intervaloRow);
+        }
+      }
+    }
+  });
+});
+
+
+</script>

@@ -1,0 +1,32 @@
+<%= form_with(model: teacher) do |form| %>
+  <% if teacher.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(teacher.errors.count, "error") %> prohibited this teacher from being saved:</h2>
+
+      <ul>
+        <% teacher.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="container">
+      <div>
+        <div class="input-group mb-3">
+          <%= form.text_field :name, class:"form-control mb-2 mr-sm-2", placeholder:"Nome do Professor" %>
+        </div>
+      </div>
+      <div>
+        <div class="input-group mb-3">
+          <%= form.text_field :nick_name, class:"form-control mb-2 mr-sm-2", placeholder:"Nome do Usuário" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <%= form.submit "Atualizar", class: "btn btn-primary", style: "background-color: #000f51;"%>
+    </div>
+  <% end %>
+  </div>
+

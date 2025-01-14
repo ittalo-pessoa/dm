@@ -1,0 +1,337 @@
+<%= stylesheet_link_tag "teachers", media: "all", "data-turbo-track": "reload" %>
+
+<%= form_with model: @horario, local: true, class: "form-horizontal" do |form| %>
+  <% if @horario.errors.any? %>
+    <div id="error_explanation" class="alert alert-danger">
+      <h4><%= pluralize(@horario.errors.count, "erro") %> encontrado(s):</h4>
+      <ul>
+        <% @horario.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :nome, "Nome do Horário", class: "form-label" %>
+    <%= form.text_field :nome, id: "nome_field", class: "form-control", value: @horario.nome %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :aulas, "Número de Aulas", class: "form-label" %>
+    <%= form.number_field :aulas, id: "aulas_field", class: "form-control", value: @horario.aulas %>
+  </div>
+
+    <strong>Curso:</strong>
+    <%= @horario.curso%><br><br>
+    <strong>Série:</strong>
+    <%= @horario.serie %>
+
+
+
+
+  <div id="dias-table" class="form-group">
+    <h3 class="text-center">Tabela de Aulas para <span id="nome-turma"><%= @horario.nome %></span></h3><br>
+
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead class="thead-dark">
+          <tr>
+            <th class="text-center">Segunda</th>
+            <th class="text-center">Terça</th>
+            <th class="text-center">Quarta</th>
+            <th class="text-center">Quinta</th>
+            <th class="text-center">Sexta</th>
+          </tr>
+        </thead>
+        <tbody id="dias-rows">
+          <!-- Linhas serão geradas dinamicamente com JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="form-group text-center">
+    <%= form.submit "Atualizar Horário", class: "btn btn-primary" %>
+    <button type="button" id="auto-fill-button" class="btn btn-secondary">Preencher Automaticamente</button>
+
+  </div>
+<% end %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const diasRows = document.getElementById('dias-rows');
+  const autoFillButton = document.getElementById('auto-fill-button');
+
+  // Função para preencher automaticamente os campos vazios
+  function preencherCamposVazios() {
+    const selects = diasRows.querySelectorAll('select');
+
+    selects.forEach(select => {
+      // Verifica se o campo está vazio
+      if (!select.value) {
+        // Seleciona a primeira opção disponível que não seja "Selecione..."
+        const firstOption = Array.from(select.options).find(option => option.value !== '');
+        if (firstOption) {
+          select.value = firstOption.value;
+        }
+      }
+    });
+
+    // Atualiza o contador de alocações após preencher
+    atualizarContadorAlocacoes();
+  }
+
+  // Adiciona o evento de clique ao botão
+  autoFillButton.addEventListener('click', preencherCamposVazios);
+});
+</script>
+
+
+
+<div id="contador-alocacoes" class="mt-4">
+  <h4>Contador de Alocações</h4>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Componente</th>
+        <th>Quantidade de Alocações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @componente_quantidade_aulas.each do |componente, quantidade| %>
+        <tr>
+          <td><%= componente %></td>
+          <td><%= quantidade %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const diasRows = document.getElementById('dias-rows');
+  const contadorAlocacoesTbody = document.querySelector('#contador-alocacoes tbody');
+
+  // Função para atualizar o contador
+  function atualizarContadorAlocacoes() {
+    const contador = {};
+
+    // Percorre todas as linhas da tabela de horários
+    const selects = diasRows.querySelectorAll('select');
+    selects.forEach(select => {
+      const componenteSelecionado = select.value;
+
+      if (componenteSelecionado) {
+        contador[componenteSelecionado] = (contador[componenteSelecionado] || 0) + 1;
+      }
+    });
+
+    // Limpa o corpo da tabela de contagem
+    contadorAlocacoesTbody.innerHTML = '';
+
+    // Adiciona as contagens na tabela
+    for (const [componente, count] of Object.entries(contador)) {
+      const row = document.createElement('tr');
+
+      const componenteCell = document.createElement('td');
+      componenteCell.textContent = componente;
+      row.appendChild(componenteCell);
+
+      const countCell = document.createElement('td');
+      countCell.textContent = count;
+      row.appendChild(countCell);
+
+      contadorAlocacoesTbody.appendChild(row);
+    }
+  }
+
+  // Atualiza o contador dinamicamente ao alterar qualquer select
+  diasRows.addEventListener('change', function (event) {
+    if (event.target.tagName === 'SELECT') {
+      atualizarContadorAlocacoes();
+    }
+  });
+
+  // Atualiza o contador inicialmente
+  atualizarContadorAlocacoes();
+});
+
+
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const nomeField = document.getElementById('nome_field');
+  const nomeTurmaSpan = document.getElementById('nome-turma');
+  const aulasField = document.getElementById('aulas_field');
+  const diasRows = document.getElementById('dias-rows');
+
+  // Passando valores para o JavaScript de forma segura
+  const disponiveis = <%= raw @disponiveis_json %>;
+  const professoresDisponiveis = <%= raw @professores_disponiveis_json %>;
+
+  // Garantir que @horario seja uma estrutura válida
+  const horarioSalvo = {
+    d1: JSON.parse(<%= raw @horario.d1.to_json %>),
+    d2: JSON.parse(<%= raw @horario.d2.to_json %>),
+    d3: JSON.parse(<%= raw @horario.d3.to_json %>),
+    d4: JSON.parse(<%= raw @horario.d4.to_json %>),
+    d5: JSON.parse(<%= raw @horario.d5.to_json %>)
+  };
+
+  console.log("Disponíveis:", disponiveis);
+  console.log("Professores Disponíveis:", professoresDisponiveis);
+  console.log("Horário Salvo:", horarioSalvo);
+
+  nomeField.addEventListener('input', function () {
+    nomeTurmaSpan.textContent = nomeField.value || "Nenhum nome informado";
+  });
+
+  // Função para carregar as linhas da tabela
+  function carregarLinhas(aulasCount) {
+    diasRows.innerHTML = ''; // Limpa as linhas atuais
+
+    if (aulasCount > 0) {
+      for (let i = 0; i < aulasCount; i++) {
+        const row = document.createElement('tr');
+
+        // Cria células para cada dia da semana
+        for (let j = 1; j <= 5; j++) {
+          const cell = document.createElement('td');
+          const select = document.createElement('select');
+          select.classList.add('form-control');
+          select.name = `horario[d${j}][]`; // Nomes dos campos com o índice adequado
+
+          // Adiciona a opção padrão "Selecione..."
+          const optionEmpty = document.createElement('option');
+          optionEmpty.value = '';
+          optionEmpty.textContent = 'Selecione...';
+          select.appendChild(optionEmpty);
+
+          // Chave do horário atual (ex.: d1_1 para o primeiro horário do Dia 1)
+          const horarioKey = `d${j}_${i + 1}`;
+
+          // Armazenando as opções que já foram adicionadas
+          let addedOptions = new Set();
+
+          // Adiciona opções com base nos professores disponíveis
+          disponiveis.forEach(function (opcao) {
+            const partes = opcao.split(" - "); // Divide a opção em "Professor(s)" e "Componente"
+            const professores = partes[0].split(" e "); // Divide os professores se houver " e "
+
+            // Verifica se o primeiro professor está disponível para o horário atual
+            if (
+              professoresDisponiveis[professores[0]] &&
+              professoresDisponiveis[professores[0]].available[horarioKey] !== false
+            ) {
+              let segundoProfessorDisponivel = true;
+              if (professores.length > 1) {
+                segundoProfessorDisponivel =
+                  professoresDisponiveis[professores[1]] &&
+                  professoresDisponiveis[professores[1]].available[horarioKey] !== false;
+              }
+
+              if (segundoProfessorDisponivel) {
+                const option = document.createElement('option');
+                if (professores.length === 1) {
+                  option.value = opcao;
+                  option.textContent = opcao;
+                  select.appendChild(option);
+                  addedOptions.add(opcao);
+                } else if (professores.length === 2) {
+                  const optionValue = professores.join(" e ") + " - " + partes[1];
+                  option.value = optionValue;
+                  option.textContent = optionValue;
+                  select.appendChild(option);
+                  addedOptions.add(optionValue);
+                }
+              }
+            }
+          });
+
+          // Se houver uma opção salva para o horário específico, seleciona-a
+          if (horarioSalvo[`d${j}`] && horarioSalvo[`d${j}`][i]) {
+            const opcaoSalva = horarioSalvo[`d${j}`][i];
+
+            // Verifica se a opção salva não foi adicionada às opções
+            if (!addedOptions.has(opcaoSalva)) {
+              const option = document.createElement('option');
+              option.value = opcaoSalva;
+              option.textContent = opcaoSalva;
+              select.appendChild(option);
+              addedOptions.add(opcaoSalva);
+            }
+
+            // Define a opção salva como a selecionada
+            select.value = opcaoSalva;
+          }
+
+          // Adiciona o campo select à célula
+          cell.appendChild(select);
+          row.appendChild(cell);
+        }
+
+        // Adiciona a linha ao corpo da tabela
+        diasRows.appendChild(row);
+
+        // Adiciona uma linha de "INTERVALO" após a 3ª aula
+        if (i === 1) {
+          const intervaloRow = document.createElement('tr');
+          intervaloRow.classList.add('bg-light');
+          for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('td');
+            cell.colSpan = 1;
+            cell.textContent = "INTERVALO";
+            cell.classList.add('text-center', 'bg-secondary', 'text-white');
+            intervaloRow.appendChild(cell);
+          }
+          diasRows.appendChild(intervaloRow);
+        }
+
+        // Adiciona uma linha de "ALMOÇO" após a 5ª aula
+        if (i === 4) {
+          const almocoRow = document.createElement('tr');
+          almocoRow.classList.add('bg-light');
+          for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('td');
+            cell.colSpan = 1;
+            cell.textContent = "ALMOÇO";
+            cell.classList.add('text-center', 'bg-secondary', 'text-white');
+            almocoRow.appendChild(cell);
+          }
+          diasRows.appendChild(almocoRow);
+        }
+
+        // Adiciona uma linha de "INTERVALO" após a 7ª aula
+        if (i === 6) {
+          const intervaloRow = document.createElement('tr');
+          intervaloRow.classList.add('bg-light');
+          for (let j = 0; j < 5; j++) {
+            const cell = document.createElement('td');
+            cell.colSpan = 1;
+            cell.textContent = "INTERVALO";
+            cell.classList.add('text-center', 'bg-secondary', 'text-white');
+            intervaloRow.appendChild(cell);
+          }
+          diasRows.appendChild(intervaloRow);
+        }
+      }
+    }
+  }
+
+  // Evento para carregar linhas
+  aulasField.addEventListener('input', function () {
+    const aulasCount = parseInt(aulasField.value, 10) || 0;
+    carregarLinhas(aulasCount);
+  });
+
+  // Dispara o evento para carregar as linhas inicialmente (caso esteja editando um horário salvo)
+  aulasField.dispatchEvent(new Event('input'));
+});
+
+
+</script>

@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montez&display=swap');
+
+h1{
+    color:  #000f51;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-align: center;
+
+}
+
+body{
+  padding: 50px;
+  margin-top: 60px;
+}
+
+body > .navbar, body > nav {
+  padding: 0 !important; /* Impede que o padding do body afete a navbar */
+}
+
+.navbar, nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Para garantir que a navbar fique acima do conteúdo */
+  background-color:#000f51 !important;; /* A cor que você deseja para a navbar */
+  width: 100%;
+  padding: 0; /* Remove qualquer padding da navbar */
+}
+
+/* No seu arquivo CSS/SCSS */
+
+.navbar {
+  background-color: #000f51 !important; /* A cor de fundo */
+  color: white !important;  /* Cor dos textos, caso necessário */
+}
+
+/* Para alterar a cor dos links na navbar */
+.navbar a {
+  color: white !important;  /* Cor dos links */
+}
+
+.navbar a:hover {
+  color: #ea7d00 !important; /* Cor quando o link é hover */
+}
+
+
+body {
+  padding-top: 60px; /* Ajuste para o tamanho da navbar */
+}
+h5{
+    color:  #000f51;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+}
+
+table{
+  padding: 50px;
+}
+
+
+td, th{
+    text-align: center;
+
+}
+
+a{
+    color: #ea7d00db;
+}
+.ana{
+    background-color: green !important;
+    color: #fff !important;
+}
+
+.info{
+    background-color: #000f51 !important;
+    color: #fff !important;
+}
+
+.agro{
+    background-color:  #dc3545 !important;
+    color: #fff !important;
+}
+
+.todos{
+    background-color: gray !important;
+}
+
+
+.btn{
+    background-color: #ea7d00db;
+}
+.btn-secondary{
+    background-color: #75534fdb;
+}
+
+.modal{
+    text-align: center;
+}
+
+.pagination {
+    background-color: #f8f9fa; /* Cor de fundo da paginação */
+    border-radius: 10px;
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: #ea7d00db; /* Cor de fundo da página ativa */
+    border-color:  #ea7d00db; /* Cor da borda da página ativa */
+    color: #fff; /* Cor do texto da página ativa */
+  }
+
+  .pagination .page-item .page-link {
+    color: #000f51; /* Cor do texto dos botões da paginação */
+    border-color: #000f51; /* Cor da borda dos botões */
+  }
+
+  .pagination .page-item.disabled .page-link {
+    color: #000f51; /* Cor para itens desabilitados */
+    background-color: #f8f9fa; /* Cor de fundo para itens desabilitados */
+    border-color: #f8f9fa; /* Cor da borda para itens desabilitados */
+  }
+
+  small{
+    padding: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  .professor-nome {
+    font-weight: bold;
+  }
+
+  .disciplina-nome {
+    font-size: 0.9em;
+    margin-top: 5px;
+  }
+
+  .btn2{
+    background-color: #000f51;
+  }
+
+  .linha-fina {
+    line-height: 5px;
+    height: 20px;
+  }
+
+  .tabela-pequena {
+    font-size: 14px;
+  }
+
+  .tabela-pequena th, .tabela-pequena td {
+    padding: 5px !important;
+  }
+
+  .tabela-ajustada {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+
