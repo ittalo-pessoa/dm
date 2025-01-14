@@ -1,5 +1,6 @@
 @import "bootstrap";
 @import 'bootstrap-icons/font/bootstrap-icons.css';
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Nanum+Gothic+Coding&display=swap');
 
 img {
   text-align: center;
@@ -14,7 +15,7 @@ img {
   left: 0;
   right: 0;
   z-index: 1000; /* Para garantir que a navbar fique acima do conteúdo */
-  background: linear-gradient(90deg, #000f51, #007dea); /* Gradiente de azul para laranja */
+  background: linear-gradient(100deg, #243584, #4952cf); /* Gradiente de azul para laranja */
   color: white; /* Cor do texto na navbar */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
@@ -34,6 +35,13 @@ img {
 
 .navbar a:hover {
   color: #ea7d00 !important
+}
+
+a{
+  font-family: "Josefin Sans", serif;
+  font-optical-sizing: auto;
+  font-weight: normal;
+  font-style: normal;
 }
 
 
