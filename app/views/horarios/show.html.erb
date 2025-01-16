@@ -1,6 +1,20 @@
 <%= stylesheet_link_tag "teachers", media: "all", "data-turbo-track": "reload" %>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<p id="notice"><%= notice %></p>
+<% if flash.notice.present? %>
+  <% if flash.notice == "Horário atualizado com sucesso." %>
+    <script>
+      Swal.fire('Horário atualizado com sucesso!', '', 'success');
+    </script>
+   <% elsif flash.notice == "Horário criado com sucesso." %>
+     <script>Swal.fire('Horário criado com sucesso!', '', 'success');</script>
+  <% else %>
+    <script>
+      Swal.fire('<%= flash.notice %>', '', 'warning');
+    </script>
+  <% end %>
+<% end %>
+
 
 <p>
   <strong>Nome:</strong>

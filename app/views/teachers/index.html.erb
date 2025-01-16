@@ -1,6 +1,3 @@
-<p id="notice"><%= notice %></p>
-
-
 <%= stylesheet_link_tag "teachers", media: "all", "data-turbo-track": "reload" %>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -11,10 +8,31 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.21.1/bootstrap-table.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<h1>Professores</h1>
+<% if flash.notice.present? %>
+  <% if flash.notice == "Teacher was successfully created." %>
+    <script>
+      Swal.fire('Professor (a) cadastrado com sucesso!', '', 'success');
+    </script>
+  <% elsif flash.notice == "Professor(a) atualizado com sucesso!" %>
+      <script>
+          Swal.fire('Professor (a) atualizado com sucesso!', '', 'success');
+        </script>
+  <% elsif flash.notice == "Professor(a) deletado com suecesso!" %>
+      <script>
+          Swal.fire('Professor(a) deletado com sucesso!', '', 'success');
+        </script>
+  <% else %>
+    <script>
+      Swal.fire('<%= flash.notice %>', '', 'warning');
+    </script>
+  <% end %>
+<% end %>
+
+<h1>PROFESSORES</h1>
 <br>
-<div class="container text-end">
+<div class="text-end">
   <button type="button" class="btn btn-primary" id="openModalBtn">
     Cadastrar Professor
   </button>

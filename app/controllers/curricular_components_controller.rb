@@ -25,7 +25,7 @@ class CurricularComponentsController < ApplicationController
     @curricular_component = CurricularComponent.new(curricular_component_params)
     respond_to do |format|
       if @curricular_component.save
-        format.html { redirect_to @curricular_component, notice: "Curricular component was successfully created." }
+        format.html { redirect_to curricular_components_path, notice: "Curricular component was successfully created." }
         format.json { render :show, status: :created, location: @curricular_component }
       else
         format.html { render :new, status: :unprocessable_entity }

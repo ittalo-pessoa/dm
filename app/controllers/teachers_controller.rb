@@ -64,8 +64,7 @@ class TeachersController < ApplicationController
 
     respond_to do |format|
       if @teacher.save
-        format.html { redirect_to @teacher, notice: "Teacher was successfully created." }
-        format.json { render :show, status: :created, location: @teacher }
+        format.html { redirect_to teachers_path, notice: "Teacher was successfully created." }
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @teacher.errors, status: :unprocessable_entity }
@@ -77,8 +76,7 @@ class TeachersController < ApplicationController
   def update
     respond_to do |format|
       if @teacher.update(teacher_params)
-        format.html { redirect_to @teacher, notice: "Teacher was successfully updated." }
-        format.json { render :show, status: :ok, location: @teacher }
+        format.html { redirect_to teachers_path, notice: "Professor(a) atualizado com sucesso!" }
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @teacher.errors, status: :unprocessable_entity }
@@ -92,7 +90,7 @@ class TeachersController < ApplicationController
     @teacher.destroy
 
     respond_to do |format|
-      format.html { redirect_to teachers_path, status: :see_other, notice: "Teacher was successfully destroyed." }
+      format.html { redirect_to teachers_path, status: :see_other, notice: "Professor(a) deletado com suecesso!" }
       format.json { head :no_content }
     end
   end
