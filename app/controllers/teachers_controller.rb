@@ -41,12 +41,38 @@ class TeachersController < ApplicationController
   def index
     @teachers = Teacher.all
     @teacher = Teacher.new
+
+    # Calcular a carga horária de cada professor
+    @cargas_horarias = {}
+    @teachers.each do |teacher|
+      carga_horaria = 0
+
+      Horario.all.each do |horario|
+        (1..5).each do |dia|
+          dia_key = "d#{dia}"
+
+          if horario[dia_key].present?
+            aulas = JSON.parse(horario[dia_key]) rescue []
+            aulas.each do |aula|
+              if aula.include?(teacher.nick_name)
+                carga_horaria += 1
+              end
+            end
+          end
+        end
+      end
+
+      @cargas_horarias[teacher.id] = carga_horaria
+    end
   end
+
 
   # GET /teachers/1 or /teachers/1.json
   def show
 
   end
+
+
 
   # GET /teachers/new
   def new
@@ -103,6 +129,6 @@ class TeachersController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def teacher_params
-      params.require(:teacher).permit(:name, :nick_name)
+      params.require(:teacher).permit(:name, :nick_name, :pontuacao)
     end
 end

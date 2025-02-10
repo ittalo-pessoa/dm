@@ -1,7 +1,7 @@
 <%= form_with(model: teacher) do |form| %>
   <% if teacher.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(teacher.errors.count, "error") %> prohibited this teacher from being saved:</h2>
+      <h2><%= pluralize(teacher.errors.count, "error") %> proibiram o salvamento deste professor:</h2>
 
       <ul>
         <% teacher.errors.each do |error| %>
@@ -12,21 +12,50 @@
   <% end %>
 
   <div class="container">
-      <div>
-        <div class="input-group mb-3">
-          <%= form.text_field :name, class:"form-control mb-2 mr-sm-2", placeholder:"Nome do Professor" %>
-        </div>
-      </div>
-      <div>
-        <div class="input-group mb-3">
-          <%= form.text_field :nick_name, class:"form-control mb-2 mr-sm-2", placeholder:"Nome do Usuário" %>
-        </div>
+    <!-- Campo Nome -->
+    <div>
+      <div class="input-group mb-3">
+        <%= form.text_field :name, class: "form-control mb-2 mr-sm-2", placeholder: "Nome do Professor" %>
       </div>
     </div>
+
+    <!-- Campo Apelido -->
+    <div>
+      <div class="input-group mb-3">
+        <%= form.text_field :nick_name, class: "form-control mb-2 mr-sm-2", placeholder: "Nome do Usuário" %>
+      </div>
+    </div>
+
+    <!-- Checkbox Coordenador -->
+    <div class="form-group">
+      <label>
+        <%= check_box_tag 'is_coordinator', '1', teacher.pontuacao.present?, id: 'is_coordinator_checkbox' %>
+        Este professor(a) é coordenador(a)?
+      </label>
+    </div>
+
+    <!-- Campo Pontuação (condicional) -->
+    <div id="pontuacao_field" class="form-group" style="<%= teacher.pontuacao.present? ? '' : 'display: none;' %>">
+      <%= form.number_field :pontuacao, class: "form-control mb-2 mr-sm-2", placeholder: "Informe a carga horária da coordenação", value: teacher.pontuacao %>
+    </div> <br>
 
     <div class="container">
-      <%= form.submit "Atualizar", class: "btn btn-primary", style: "background-color: #000f51;"%>
+      <%= form.submit "Atualizar", class: "btn btn-primary", style: "background-color: #000f51;" %>
     </div>
-  <% end %>
   </div>
+<% end %>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const checkbox = document.getElementById("is_coordinator_checkbox");
+    const pontuacaoField = document.getElementById("pontuacao_field");
+
+    checkbox.addEventListener("change", function() {
+      if (checkbox.checked) {
+        pontuacaoField.style.display = "block";
+      } else {
+        pontuacaoField.style.display = "none";
+      }
+    });
+  });
+</script>

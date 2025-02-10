@@ -64,23 +64,24 @@ document.addEventListener('DOMContentLoaded', function () {
   const autoFillButton = document.getElementById('auto-fill-button');
 
   // Função para preencher automaticamente os campos vazios
-  function preencherCamposVazios() {
-    const selects = diasRows.querySelectorAll('select');
+function preencherCamposVazios() {
+  const selects = diasRows.querySelectorAll('select');
 
-    selects.forEach(select => {
-      // Verifica se o campo está vazio
-      if (!select.value) {
-        // Seleciona a primeira opção disponível que não seja "Selecione..."
-        const firstOption = Array.from(select.options).find(option => option.value !== '');
-        if (firstOption) {
-          select.value = firstOption.value;
-        }
+  selects.forEach(select => {
+    if (!select.value) {
+      // Filtra as opções disponíveis
+      const availableOptions = Array.from(select.options).filter(option => option.value !== '');
+
+      if (availableOptions.length > 0) {
+        // Seleciona uma opção aleatória
+        const randomOption = availableOptions[Math.floor(Math.random() * availableOptions.length)];
+        select.value = randomOption.value;
       }
-    });
+    }
+  });
 
-    // Atualiza o contador de alocações após preencher
-    atualizarContadorAlocacoes();
-  }
+  atualizarContadorAlocacoes();
+}
 
   // Adiciona o evento de clique ao botão
   autoFillButton.addEventListener('click', preencherCamposVazios);

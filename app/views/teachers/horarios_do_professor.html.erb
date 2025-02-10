@@ -1,5 +1,4 @@
 <%= stylesheet_link_tag "teachers", media: "all", "data-turbo-track": "reload" %>
-
 <h3>Horários de <%= @horarios_professor[:professor] %></h3>
 
 <% if @horarios_professor[:horarios].empty? %>
@@ -58,10 +57,21 @@
 
       // Adiciona a coluna "Aula" com número e horário
       let aulaCell = document.createElement('td');
+
+      // Adiciona o número da aula com negrito e fonte reduzida
+      const numeroDiv = document.createElement('div');
+      numeroDiv.textContent = aulaCount;
+      numeroDiv.style.fontWeight = "bold";
+      numeroDiv.style.fontSize = "small";
+
+      // Adiciona o horário com fonte reduzida e cinza
       const horarioDiv = document.createElement('div');
       horarioDiv.textContent = horariosAulas[aulaCount];
       horarioDiv.style.fontSize = "smaller";
       horarioDiv.style.color = "gray";
+
+      // Adiciona os elementos na célula
+      aulaCell.appendChild(numeroDiv);
       aulaCell.appendChild(horarioDiv);
       aulaCell.classList.add('text-center');
       linha.appendChild(aulaCell);

@@ -51,6 +51,7 @@
     <tr>
       <th data-field="name" data-sortable="true">Nome completo</th>
       <th data-field="nick" data-sortable="true">Nome do usuário</th>
+      <th data-field="carga" data-sortable="true">Carga Horária</th>
       <th data-field="horario" data-sortable="false">Horário Individual</th>
       <th data-field="status" data-sortable="false">Visualizar</th>
       <th data-field="edit" data-sortable="false">Editar</th>
@@ -62,6 +63,11 @@
       <tr>
         <td><%= teacher.name %></td>
         <td><%= teacher.nick_name %></td>
+        <%if teacher.pontuacao.present?%>
+          <td><%= @cargas_horarias[teacher.id] + teacher.pontuacao %></td>
+        <%else%>
+           <td><%= @cargas_horarias[teacher.id] %></td>
+        <%end%>
         <td><%= link_to '', horarios_do_professor_teacher_path(teacher), class: "bi bi-alarm-fill" %></td>
         <td><%= link_to '', teacher, class: "bi bi-eye-fill" %></td>
         <td><%= link_to '', edit_teacher_path(teacher), class: "bi bi-pen-fill" %></td>
@@ -95,13 +101,30 @@
             </div>
           <% end %>
 
+          <!-- Campo Nome -->
           <div class="form-group">
             <%= form.text_field :name, class: "form-control", placeholder: "Digite o Nome do Professor" %>
           </div>
           <br>
 
+          <!-- Campo Apelido -->
           <div class="form-group">
-            <%= form.text_field :nick_name, class: "form-control", placeholder: "Digite o seu Apelido" %>
+            <%= form.text_field :nick_name, class: "form-control", placeholder: "Digite o Apelido" %>
+          </div>
+          <br>
+
+          <!-- Checkbox Coordenador -->
+          <div class="form-group">
+            <label>
+              <%= check_box_tag 'is_coordinator', '1', false, id: 'is_coordinator_checkbox' %>
+              Este professor(a) é coordenador(a)?
+            </label>
+          </div>
+          <br>
+
+          <!-- Campo Pontuação (condicional) -->
+          <div id="pontuacao_field" class="form-group" style="display: none;">
+            <%= form.number_field :pontuacao, class: "form-control", placeholder: "Informe a carga horária da coordenação" %>
           </div>
 
           <div class="modal-footer">
@@ -113,6 +136,21 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const checkbox = document.getElementById("is_coordinator_checkbox");
+    const pontuacaoField = document.getElementById("pontuacao_field");
+
+    checkbox.addEventListener("change", function() {
+      if (checkbox.checked) {
+        pontuacaoField.style.display = "block";
+      } else {
+        pontuacaoField.style.display = "none";
+      }
+    });
+  });
+</script>
 
 
 <script>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_01_02_231343) do
+ActiveRecord::Schema.define(version: 2025_01_21_000513) do
 
   create_table "curricular_components", force: :cascade do |t|
     t.string "nome"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2025_01_02_231343) do
     t.string "nick_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "pontuacao"
   end
 
   add_foreign_key "curricular_components", "teachers", column: "responsible_id"
