@@ -78,7 +78,7 @@ class HorariosController < ApplicationController
         JSON.parse(@horario[dia_key] || '[]').count { |aula| aula.include?(componente.nome) } rescue 0
       end
 
-      alocacoes_no_horario >= componente.aulas
+      alocacoes_no_horario >= (componente.aulas || 0)
     end
 
     @disponiveis = []

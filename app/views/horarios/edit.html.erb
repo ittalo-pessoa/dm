@@ -31,7 +31,7 @@
 
 
   <div id="dias-table" class="form-group">
-    <h3 class="text-center">Tabela de Aulas para <span id="nome-turma"><%= @horario.nome %></span></h3><br>
+    <h3 class="text-center">Quadro de Aulas para <span id="nome-turma"><%= @horario.nome %></span></h3><br>
 
     <div class="table-responsive">
       <table class="table table-bordered">
@@ -171,11 +171,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const aulasField = document.getElementById('aulas_field');
   const diasRows = document.getElementById('dias-rows');
 
-  // Passando valores para o JavaScript de forma segura
+
   const disponiveis = <%= raw @disponiveis_json %>;
   const professoresDisponiveis = <%= raw @professores_disponiveis_json %>;
 
-  // Garantir que @horario seja uma estrutura válida
+
   const horarioSalvo = {
     d1: JSON.parse(<%= raw @horario.d1.to_json %>),
     d2: JSON.parse(<%= raw @horario.d2.to_json %>),

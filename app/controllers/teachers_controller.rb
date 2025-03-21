@@ -2,7 +2,30 @@ class TeachersController < ApplicationController
   before_action :set_teacher, only: %i[ show edit update destroy ]
 
   def horarios_do_professor
-    # Encontrar o professor com base no ID
+    @teachers = Teacher.all
+    @teacher = Teacher.new
+
+    @cargas_horarias = {}
+    @teachers.each do |teacher|
+      carga_horaria = 0
+
+      Horario.all.each do |horario|
+        (1..5).each do |dia|
+          dia_key = "d#{dia}"
+
+          if horario[dia_key].present?
+            aulas = JSON.parse(horario[dia_key]) rescue []
+            aulas.each do |aula|
+              if aula.include?(teacher.nick_name)
+                carga_horaria += 1
+              end
+            end
+          end
+        end
+      end
+
+      @cargas_horarias[teacher.id] = carga_horaria
+    end
     professor = Teacher.find_by(id: params[:id])
 
     if professor.nil?

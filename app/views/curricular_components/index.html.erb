@@ -13,7 +13,7 @@
 <% if flash.notice.present? %>
   <% if flash.notice == "Curricular component was successfully created." %>
     <script>
-      Swal.fire('Componente cadastrado com sucesso!', '', 'success');
+      Swal.fire('<i class="bi bi-check-circle text-success"></i> Sucesso!', '', '<i class="bi bi-check-circle text-success"></i>');
     </script>
   <% elsif flash.notice == "Curricular component was successfully updated." %>
     <script>

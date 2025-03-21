@@ -1,5 +1,18 @@
 <%= stylesheet_link_tag "teachers", media: "all", "data-turbo-track": "reload" %>
-<h3>Horários de <%= @horarios_professor[:professor] %></h3>
+
+<%@professor = Teacher.find_by(nick_name: @horarios_professor[:professor])%>
+
+<%if @professor.pontuacao.present?%>
+
+  <h3>Horários de <%= @horarios_professor[:professor] %> - <%=@carga = @cargas_horarias[@professor.id] + @professor.pontuacao%> hora(s)</h3>
+  <span>Este professor(a), possui <%= @professor.pontuacao%> horas de coordenação</span>
+<%else%>
+  <h3>Horários de <%= @horarios_professor[:professor] %> - <%=@carga = @cargas_horarias[@professor.id]%> hora(s)</h3>
+
+<%end%>
+
+
+
 
 <% if @horarios_professor[:horarios].empty? %>
   <p>Este professor não possui horários registrados.</p>

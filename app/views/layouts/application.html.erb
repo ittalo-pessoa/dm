@@ -11,21 +11,14 @@
   </head>
 
   <body>
-    <!-- Menu de Navegação -->
     <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container-fluid">
-        <!-- Logotipo -->
         <a class="navbar-brand d-flex align-items-center" href="/">
           <img src="<%= asset_path('logo.PNG') %>" alt="Logo da Escola" style="width: 50px;" class="me-2">
-          <!--<span>PROFTECH</span> -->
         </a>
-
-        <!-- Botão do menu hambúrguer -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-
-        <!-- Links do menu -->
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
@@ -47,8 +40,6 @@
         </div>
       </div>
     </nav>
-
-    <!-- Conteúdo da página -->
     <%= yield %>
   </body>
 </html>
