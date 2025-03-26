@@ -10,16 +10,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.21.1/bootstrap-table.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
 <% if flash.notice.present? %>
   <% if flash.notice == "Curricular component was successfully created." %>
     <script>
-      Swal.fire('<i class="bi bi-check-circle text-success"></i> Sucesso!', '', '<i class="bi bi-check-circle text-success"></i>');
+      Swal.fire('Componente criado com sucesso!', '', 'success');
     </script>
-  <% elsif flash.notice == "Curricular component was successfully updated." %>
-    <script>
-      Swal.fire('Componente atualizado com sucesso!', '', 'success');
-    </script>
-      <% else %>
+  <% elsif flash.notice == "Professor(a) atualizado com sucesso!" %>
+      <script>
+          Swal.fire("Componente atualizado com sucesso!", '', 'success');
+        </script>
+  <% else %>
     <script>
       Swal.fire('<%= flash.notice %>', '', 'warning');
     </script>
