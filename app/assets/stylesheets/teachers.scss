@@ -161,4 +161,13 @@ a{
     margin: 0 auto;
   }
 
+  .dropdown-menu.show {
+    display: block;
+    position: absolute;
+    transform: translate3d(0, 40px, 0);
+    top: 0;
+    left: 0;
+    will-change: transform;
+  }
+
 

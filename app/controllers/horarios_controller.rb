@@ -210,6 +210,7 @@ class HorariosController < ApplicationController
 
   def index
     @horarios = Horario.all
+    @horarios = Horario.order(:nome)
   end
 
   def destroy
@@ -228,6 +229,7 @@ class HorariosController < ApplicationController
 
   def horarios_por_dia
     @horarios = Horario.all
+    @horarios = Horario.order(:nome)
     @horarios_nomes = @horarios.map(&:nome).uniq
     @horarios_por_dia = {}
 

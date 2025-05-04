@@ -5,21 +5,27 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.21.1/bootstrap-table.min.css" rel="stylesheet">
 
-<!-- Scripts -->
+<!-- Scripts (ordem IMPORTANTE!) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.21.1/bootstrap-table.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.21.1/locale/bootstrap-table-pt-BR.min.js"></script>
 
 <h1>HORÁRIOS</h1>
 
+<!-- Toolbar obrigatória para exibir os botões de colunas -->
+<div id="toolbar"></div>
+
 <table id="teachers-table" class="table table-striped"
+       data-toggle="table"
+       data-toolbar="#toolbar"
        data-pagination="true"
        data-page-size="10"
+       data-page-list="[10, 25, 50, 100, 'All']"
        data-search="true"
        data-show-columns="true"
-       data-pagination-parts='["pageSize", "pageList"]'
-       data-toggle="table"
+       data-show-columns-toggle-all="true"
        data-search-placeholder="Pesquisar...">
   <thead>
     <tr>
@@ -31,7 +37,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @horarios.each do |horario|  %>
+    <% @horarios.each do |horario| %>
       <% d1 = JSON.parse(horario.d1) rescue [] %>
       <% d2 = JSON.parse(horario.d2) rescue [] %>
       <% d3 = JSON.parse(horario.d3) rescue [] %>
@@ -39,39 +45,31 @@
       <% d5 = JSON.parse(horario.d5) rescue [] %>
       <tr>
         <td><%= horario.nome %></td>
-        <%if d1.all?(&:present?) and d2.all?(&:present?) and d3.all?(&:present?) and d4.all?(&:present?) and d5.all?(&:present?) %>
-          <td>Horário completo <i class="bi bi-check-circle-fill" style='color: green'></i> </td>
-        <%else%>
-          <td> Horário incompleto <i class="bi bi-patch-exclamation-fill" style='color: red'></i> </td>
-        <%end%>
-
-        <td><%= link_to '', horario , class: "bi bi-eye-fill" %></td>
+        <% if d1.all?(&:present?) && d2.all?(&:present?) && d3.all?(&:present?) && d4.all?(&:present?) && d5.all?(&:present?) %>
+          <td>Horário completo <i class="bi bi-check-circle-fill" style='color: green'></i></td>
+        <% else %>
+          <td>Horário incompleto <i class="bi bi-patch-exclamation-fill" style='color: red'></i></td>
+        <% end %>
+        <td><%= link_to '', horario, class: "bi bi-eye-fill" %></td>
         <td><%= link_to '', edit_horario_path(horario), class: "bi bi-pen-fill" %></td>
-       <td><%= button_to horario, method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn p-0 border-0 bg-transparent', style: 'color: #ea7d00db' do %>
-          <i class="bi bi-trash-fill"></i> <% end %></td>
+        <td>
+          <%= button_to horario, method: :delete, data: { confirm: 'Tem certeza?' }, class: 'btn p-0 border-0 bg-transparent', style: 'color: #ea7d00db' do %>
+            <i class="bi bi-trash-fill"></i>
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
+<!-- Inicialização com segurança para Turbo e jQuery -->
 <script>
-  $(document).ready(function () {
-    $('#teachers-table').bootstrapTable({
-      pagination: true,
-      pageSize: 10,
-      pageList: [10, 25, 50, 100, 'All'],
-      search: true,
-      showColumns: true,
-      showColumnsToggleAll: true
-    });
+  document.addEventListener("turbo:load", function () {
+    setTimeout(function () {
+      $('#teachers-table').bootstrapTable('destroy').bootstrapTable();
+    }, 100);
   });
 </script>
 
-
-
-
-
 <%= link_to 'Novo Horário', new_horario_path, class: 'btn btn-primary' %><br><br>
 <%= link_to 'Todos Horários', horarios_por_dia_horarios_path, class: 'btn-secondary btn' %>
-
-
